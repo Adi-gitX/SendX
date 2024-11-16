@@ -1,33 +1,45 @@
-const transporter = require('../config/mailConfig');
-const { body, validationResult } = require('express-validator');
-const logger = require('../utils/logger'); // Assuming you have a logger utility
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+const mailRoutes = require('./routes/mailRoutes'); // Ensure this is the correct path for your mail routes
 
-const sendEmail = async (req, res) => {
-  await body('to').isEmail().run(req);
-  await body('subject').notEmpty().run(req);
-  await body('text').notEmpty().run(req);
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { to, subject, text } = req.body;
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to,
-    subject,
-    text,
-  };
-
-  try {
-    const info = await transporter.sendMail(mailOptions);
-    logger.info(`Email sent: ${info.response}`);
-    res.status(200).json({ message: 'Email sent successfully', info });
-  } catch (error) {
-    logger.error(`Failed to send email: ${error.message}`);
-    res.status(500).json({ message: 'Failed to send email', error });
-  }
+// CORS configuration
+const corsOptions = {
+  origin: 'http://adigitx.vercel.app', // Allow frontend requests from this origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+  credentials: true, // Allows sending cookies/credentials
 };
 
-module.exports = { sendEmail };
+// Use CORS middleware
+app.use(cors(corsOptions)); // Apply CORS settings globally
+
+app.use(morgan('dev')); // Logging middleware
+app.use(express.json()); // Parse JSON requests
+
+// Routes for the mail API
+app.use('/api', mailRoutes); // Your mail routes
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+// Preflight request handling for CORS
+app.options('*', cors(corsOptions)); // Handles preflight requests
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error in request:', err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+
+module.exports = app; // For Vercel deployment (no need for app.listen on Vercel)
