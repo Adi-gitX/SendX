@@ -1,12 +1,14 @@
 const express = require('express');
+const { sendEmail } = require('../controllers/mailController'); // Importing the email controller
 const router = express.Router();
 
-// Example route, add your mail logic here
-router.post('/send', (req, res) => {
-  const { recipient, subject, body } = req.body;
-
-  // Logic for sending email goes here
-  res.status(200).json({ message: 'Email sent successfully', recipient, subject, body });
+// Route to handle sending emails
+router.post('/send-email', async (req, res, next) => {
+    try {
+        await sendEmail(req, res); // Handle email sending logic
+    } catch (error) {
+        next(error); // Pass errors to the error handler
+    }
 });
 
 module.exports = router;
