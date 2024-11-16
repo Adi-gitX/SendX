@@ -1,14 +1,14 @@
-# Nodemailer Server
+# SendX - Nodemailer Email API 📧
 
-A simple Node.js server using Nodemailer to send emails via an API endpoint. This server allows you to send emails with a specified recipient, subject, and message body.
+A simple Node.js server using **Nodemailer** to send emails via an API endpoint. This server allows you to send emails with a recipient, subject, and message body. 🚀
 
-## Installation
+## Installation ⚙️
 
 1. **Clone the repository:**
 
    ```bash
-   git clone git@github.com:nandu-99/QuickSend.git
-   cd nodemailer-server
+   git clone git@github.com:Adi-gitX/SendX.git
+   cd SendX
    ```
 
 2. **Install dependencies:**
@@ -17,9 +17,9 @@ A simple Node.js server using Nodemailer to send emails via an API endpoint. Thi
    npm install
    ```
 
-3. **Create a `.env` file** in the root directory with your email configuration (see the [Environment Variables](#environment-variables) section).
+3. **Create a `.env` file** in the root directory with your email configuration. 📝
 
-## Usage
+## Usage 🚀
 
 1. **Start the server:**
 
@@ -27,54 +27,28 @@ A simple Node.js server using Nodemailer to send emails via an API endpoint. Thi
    node index.js
    ```
 
-2. The server will run on `http://localhost:3000` by default.
+2. The server will run on `http://localhost:3000` by default. 🌐
 
-## API
+## API 💻
 
-### Send Email
+### Send Email 📤
 
 - **Endpoint:** `POST /api/send-email`
-- **Request Body:**
+- **Request Body:**  
+  `{ "to": "recipient@example.com", "subject": "Subject", "text": "Message body" }`
 
-```json
-{
-  "to": "recipient@example.com",
-  "subject": "Your Subject Here",
-  "text": "Your email body here."
-}
-```
-
-- **Response:**
-
-  - **Success (200):**
-  
-    ```json
-    {
-      "message": "Email sent successfully",
-      "info": {
-        // Mail info object
-      }
-    }
-    ```
-
-  - **Failure (500):**
-  
-    ```json
-    {
-      "message": "Failed to send email",
-      "error": {
-        // Error details
-      }
-    }
-    ```
-
-## Environment Variables
+## Environment Variables ⚡
 
 Create a `.env` file in the root directory with the following variables:
 
 ```plaintext
 EMAIL_HOST=smtp.example.com      # Replace with your SMTP server
-EMAIL_PORT=587                    # Common port for SMTP
-EMAIL_USER=your-email@example.com  # Replace with your email address
-EMAIL_PASS=your-password           # Replace with your email password
+EMAIL_PORT=587                   # SMTP port
+EMAIL_USER=your-email@example.com  # Your email address
+EMAIL_PASS=your-email-password     # Your email password
 ```
+
+## Tools and Libraries Used 🛠️
+
+- **Nodemailer** for sending emails. 📧
+- **Morgan** for HTTP request logging, helping track API requests and responses. 🔍
