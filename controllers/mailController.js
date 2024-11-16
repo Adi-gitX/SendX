@@ -1,45 +1,27 @@
-require('dotenv').config();
-const express = require('express');
-const morgan = require('morgan');
-const cors = require('cors');
-const mailRoutes = require('./routes/mailRoutes'); // Ensure this is the correct path for your mail routes
+const transporter = require('../config/nodemailer'); // Import the transporter from the config
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Controller to send the email
+const sendEmail = async (req, res) => {
+  const { recipient, subject, body } = req.body;
 
-// CORS configuration
-const corsOptions = {
-  origin: 'http://adigitx.vercel.app', // Allow frontend requests from this origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-  credentials: true, // Allows sending cookies/credentials
+  if (!recipient || !subject || !body) {
+    return res.status(400).json({ error: 'Missing required fields: recipient, subject, or body' });
+  }
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: recipient,
+    subject: subject,
+    text: body,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions); // Send the email using nodemailer
+    res.status(200).json({ message: 'Email sent successfully', recipient, subject, body });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-// Use CORS middleware
-app.use(cors(corsOptions)); // Apply CORS settings globally
-
-app.use(morgan('dev')); // Logging middleware
-app.use(express.json()); // Parse JSON requests
-
-// Routes for the mail API
-app.use('/api', mailRoutes); // Your mail routes
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
-});
-
-// Preflight request handling for CORS
-app.options('*', cors(corsOptions)); // Handles preflight requests
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error in request:', err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
-
-module.exports = app; // For Vercel deployment (no need for app.listen on Vercel)
+module.exports = { sendEmail };
