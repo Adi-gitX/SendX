@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
-const cors = require('cors'); // Import cors
 const mailRoutes = require('./routes/mailRoutes');
 
 const app = express();
@@ -9,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:3000', // Allow frontend requests from this origin
+  origin: 'http://adigitx.vercel.app', // Allow frontend requests from this origin
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
   credentials: true, // Allows sending cookies/credentials
@@ -27,7 +26,6 @@ app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
