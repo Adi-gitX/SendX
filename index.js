@@ -9,9 +9,9 @@ const PORT = process.env.PORT || 3000;
 
 // CORS configuration
 const corsOptions = {
-  origin: 'https://adigitx.vercel.app/', // Allow frontend requests from this origin
+  origin: '/https:\/\/adigitx\.vercel\.app/', // Allow frontend requests from this origin
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  // allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
   credentials: true, // Allows sending cookies/credentials
 };
 
