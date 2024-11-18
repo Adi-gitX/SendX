@@ -3,7 +3,7 @@ const { sendEmail } = require('../controllers/mailController'); // Importing the
 const router = express.Router();
 
 // Route to handle sending emails
-router.post('/send-email', async (req, res, next) => {
+router.post('/contactme', async (req, res, next) => {
   try {
     await sendEmail(req, res); // Handle email sending logic
   } catch (error) {
