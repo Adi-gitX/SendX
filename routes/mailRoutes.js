@@ -4,11 +4,11 @@ const router = express.Router();
 
 // Route to handle sending emails
 router.post('/send-email', async (req, res, next) => {
-    try {
-        await sendEmail(req, res); // Handle email sending logic
-    } catch (error) {
-        next(error); // Pass errors to the error handler
-    }
+  try {
+    await sendEmail(req, res); // Handle email sending logic
+  } catch (error) {
+    next(error); // Pass errors to the error handler
+  }
 });
 
 module.exports = router;
