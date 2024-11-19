@@ -1,4 +1,3 @@
-// utils/logger.js
 const logger = {
     log: (message) => {
       console.log(`[INFO]: ${message}`);

@@ -1,4 +1,3 @@
-// routes/mailRoutes.js
 const express = require('express');
 const { sendEmail } = require('../controllers/mailController');
 

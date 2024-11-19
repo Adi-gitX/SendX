@@ -1,30 +1,30 @@
-// controllers/mailController.js
-const transporter = require('../config/nodemailer'); // Use transporter from config
-const logger = require('../utils/logger'); // Use logger for consistent logging
+const transporter = require('../config/nodemailer');
+const logger = require('../utils/logger');
 
 const sendEmail = async (req, res) => {
-  const { recipient, subject, body } = req.body;
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-  // Validate request body
-  if (!recipient || !subject || !body) {
-    return res.status(400).json({ message: 'Missing required fields: recipient, subject, or body.' });
+  const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'All fields are required' });
   }
 
   try {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: recipient,
-      subject,
-      text: body,
-    };
+    await transporter.sendMail({
+      from: `"Contact Form" <${process.env.EMAIL_USER}>`,
+      to: process.env.ADMIN_EMAIL, // Admin email from environment variables
+      subject: `New Contact Form Submission from ${name}`,
+      text: `You have a new contact form submission:\n\nName: ${name}\nEmail: ${email}\nMessage: ${message}`,
+    });
 
-    // Send email
-    await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ message: 'Email sent successfully!' });
+    logger.log('Email sent successfully');
+    return res.status(200).json({ message: 'Message sent successfully' });
   } catch (error) {
-    logger.error('Error sending email:', error);
-    res.status(500).json({ message: 'Failed to send email. Please try again later.' });
+    logger.error(`Error sending email: ${error.message}`);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
