@@ -1,38 +1,29 @@
-const nodemailer = require('nodemailer');
+// controllers/mailController.js
+const transporter = require('../config/nodemailer'); // Use transporter from config
+const logger = require('../utils/logger'); // Use logger for consistent logging
 
 const sendEmail = async (req, res) => {
   const { recipient, subject, body } = req.body;
 
-  // Check if all necessary fields are provided
+  // Validate request body
   if (!recipient || !subject || !body) {
-    return res.status(400).json({ message: 'Missing required fields.' });
+    return res.status(400).json({ message: 'Missing required fields: recipient, subject, or body.' });
   }
 
   try {
-    // Create a transporter object using SMTP transport
-    const transporter = nodemailer.createTransport({
-      service: 'gmail', // Example, can be any email service you use
-      auth: {
-        user: process.env.EMAIL_USER, // Make sure to store your email user and password in .env file
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    // Set up email data
     const mailOptions = {
-      from: process.env.EMAIL_USER, // Sender address
-      to: recipient, // List of recipients
-      subject: subject, // Subject line
-      text: body, // Plain text body
+      from: process.env.EMAIL_USER,
+      to: recipient,
+      subject,
+      text: body,
     };
 
-    // Send the email
+    // Send email
     await transporter.sendMail(mailOptions);
 
-    // Respond with success message
     res.status(200).json({ message: 'Email sent successfully!' });
   } catch (error) {
-    console.error('Error sending email:', error);
+    logger.error('Error sending email:', error);
     res.status(500).json({ message: 'Failed to send email. Please try again later.' });
   }
 };

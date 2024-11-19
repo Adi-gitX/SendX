@@ -1,14 +1,10 @@
+// routes/mailRoutes.js
 const express = require('express');
-const { sendEmail } = require('../controllers/mailController'); // Importing the email controller
+const { sendEmail } = require('../controllers/mailController');
+
 const router = express.Router();
 
-// Route to handle sending emails
-router.post('/contactme', async (req, res, next) => {
-  try {
-    await sendEmail(req, res); // Handle email sending logic
-  } catch (error) {
-    next(error); // Pass errors to the error handler
-  }
-});
+// POST route to send email
+router.post('/send-email', sendEmail);
 
 module.exports = router;
